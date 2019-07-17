@@ -3,20 +3,8 @@
 #include "./constants.c"
 
 #define DEBUG false
-
-// /*
-//  * Pile de notes
-//  * Toutes les notes jouées sont stocké dans "head"
-//  */
-// typedef struct NodeNote NodeNote;
-// struct NodeNote {
-//   int pitch;
-//   int endAt;
-//   struct NodeNote * next;
-// };
-
-NodeNote *head = (struct NodeNote *) malloc(sizeof(struct NodeNote));
-// NoteStack noteStack;
+NoteStack * noteStack;
+NoteStack * noteStack2;
 
 /*
  * Clocking
@@ -64,60 +52,6 @@ int melodyMode = 0;      // Méthode de parcour
 int melodyPointer = 0;                // A quel index se trouve t'on dans la suite mélodique
 int melodyIndex = 0;                  // A quel index se trouve t'on dans la liste des notes active
 int melodyLength = 0;                 
-
-/*
- * Register a new note on the stack
- */ 
-NodeNote* addNote(NodeNote * head, int pitch) {
-    // Trigger midi command
-    noteOn(0x90, pitch, 0x45);
-
-    // Compute duration
-    float baseDuration = timeBetweenNote*inputLength;
-    // to fix: may cause some  bug
-    float randomDuration = inputLengthRandom*inputLength*random(0, 100)*timeBetweenNote;
-    float duration = (float) baseDuration - randomDuration;
-
-    // Get the last item
-    NodeNote * current = head;
-    while (current->next != NULL) {
-      current = current->next;
-    }
-
-    // Allocate memory
-    current->next = (NodeNote *) malloc(sizeof(NodeNote)); 
-
-    // Register values
-    current->next->pitch = pitch;                          
-    current->next->endAt = time + duration;
-    current->next->next = NULL;
-
-    return head;
-}
-
-
-void removeOldNotes(NodeNote *head) {
-  NodeNote *current = head;
-  NodeNote *next;
-
-  int count = 0;
-  int currentTime = millis();
-  while (current != NULL) {
-    next = current->next;       
-    if(next != NULL && next->endAt < currentTime) {
-      
-      noteOn(0x90, next->pitch, 0x00);
-      // Si la note d'après existe
-      NodeNote * new_next = next->next;
-
-      free(next);
-      current->next = new_next;
-    }
-    current = next;
-    count ++;
-  }
-}
-
 
 
 /*
@@ -232,15 +166,15 @@ void setup() {
     Serial.begin(31250); 
   }
 
-  head->pitch = 0.;
-  head->next = NULL;
-
   // Clocking
   time = millis();
   lastTick = -1000;
   bpm = 40;
   tempo = temp1_4;
   timeBetweenNote = getTimeBetweenNote();
+
+  noteStack = new NoteStack();
+  noteStack2 = new NoteStack();
 
   // Tonalité et mode
   octave = 3;      
@@ -279,21 +213,14 @@ void loop() {
     melodyIndex = getInputIndex(melodyPointer);
     int midiNote = getNoteFromRank(inputNotes[melodyIndex]);
 
-    // Add note
-    head = addNote(head, midiNote);
-
     // Compute duration
     float baseDuration = timeBetweenNote*inputLength;
     // to fix: may cause some  bug
     float randomDuration = inputLengthRandom*inputLength*random(0, 100)*timeBetweenNote;
     float duration = (float) baseDuration - randomDuration;
 
-    // noteStack.addNote(midiNote, 0x45, time + duration);
-
-    removeOldNotes(head);
-    // Check 
-    // noteStack.removeOldNotes();
-    //Serial.println(noteStack->count());
+    noteStack->addNote(midiNote, 0x45, time + duration);
+    noteStack->removeOldNotes();
 
     // update clocking clocking
     lastTick = time;

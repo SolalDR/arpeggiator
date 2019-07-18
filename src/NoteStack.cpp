@@ -22,7 +22,6 @@ NoteStack::NoteStack() {
   this->length = 0;
 }
 
-
 void NoteStack::addNote(int pitch, int velocity, float endTime) {
   // Trigger midi command
   noteOn(0x90, pitch, velocity);
@@ -41,9 +40,9 @@ void NoteStack::removeOldNotes() {
   NodeNote * next;
 
   int currentTime = millis();
-
   while (current != NULL) {
-    next = current->next;       
+    next = current->next;
+
     if(next != NULL && next->endAt < currentTime) {      
       noteOn(0x90, next->pitch, 0x00);
       NodeNote * new_next = next->next;
@@ -51,6 +50,7 @@ void NoteStack::removeOldNotes() {
       free(next);
       current->next = new_next;
     }
+    
     current = next;
   }
 }

@@ -1,10 +1,13 @@
 #include <stdlib.h>
 #include <arduino.h>
+#include "NoteStack.h"
+#include "Rythmic.h"
 #include "./constants.c"
+
 
 #define DEBUG false
 NoteStack * noteStack;
-NoteStack * noteStack2;
+Rythmic * rythmicStack;
 
 /*
  * Clocking
@@ -174,7 +177,7 @@ void setup() {
   timeBetweenNote = getTimeBetweenNote();
 
   noteStack = new NoteStack();
-  noteStack2 = new NoteStack();
+  rythmicStack = new Rythmic();
 
   // Tonalité et mode
   octave = 3;      
@@ -218,6 +221,11 @@ void loop() {
     // to fix: may cause some  bug
     float randomDuration = inputLengthRandom*inputLength*random(0, 100)*timeBetweenNote;
     float duration = (float) baseDuration - randomDuration;
+
+    RythmicTick tick = rythmicStack->computeTick();
+
+    Serial.println((float) tick.duration);
+    Serial.println((float) tick.velocity);
 
     noteStack->addNote(midiNote, 0x45, time + duration);
     noteStack->removeOldNotes();

@@ -1,7 +1,0 @@
-{
-    "board": "arduino:avr:mega",
-    "sketch": "src/arpegiator.ino",
-    "port": "/dev/cu.usbmodem143101",
-    "programmer": "ArduinoISP",
-    "configuration": "cpu=atmega2560"
-}

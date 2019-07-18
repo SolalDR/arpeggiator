@@ -1,5 +1,5 @@
-#ifndef Morse_h
-#define Morse_h
+#ifndef NodeNote_h
+#define NodeNote_h
 
 #include "arduino.h"
 
@@ -15,7 +15,6 @@ class NoteStack {
   private:
     NodeNote* head;
     int length;
-    
 
   public: 
     NoteStack();
@@ -24,4 +23,3 @@ class NoteStack {
 };
 
 #endif
-

@@ -1,16 +1,25 @@
-// #ifndef Morse_h
-// #define Morse_h
+#ifndef NodeNote_h
+#define NodeNote_h
 
-// #include "Arduino.h"
+#include "arduino.h"
 
-// class NoteStack {
-//   private:
-//     NodeNote *head;
-  
-//   public: 
-//     void addNote(int pitch, int velocity, float endTime);
-//     void removeOldNotes(void);
-// };
+class NodeNote {
+  public: 
+    int pitch;
+    int endAt;
+    NodeNote* next;
+};
 
-// #endif;
 
+class NoteStack {  
+  private:
+    NodeNote* head;
+    int length;
+
+  public: 
+    NoteStack();
+    void addNote(int pitch, int velocity, float endTime);
+    void removeOldNotes(void);
+};
+
+#endif

@@ -1,22 +1,12 @@
 #include <stdlib.h>
 #include <arduino.h>
+#include "config.h"
+#include "NoteStack.h"
+#include "Rythmic.h"
 #include "./constants.c"
 
-#define DEBUG false
-
-// /*
-//  * Pile de notes
-//  * Toutes les notes jouées sont stocké dans "head"
-//  */
-// typedef struct NodeNote NodeNote;
-// struct NodeNote {
-//   int pitch;
-//   int endAt;
-//   struct NodeNote * next;
-// };
-
-NodeNote *head = (struct NodeNote *) malloc(sizeof(struct NodeNote));
-// NoteStack noteStack;
+NoteStack noteStack;
+Rythmic rythmicStack;
 
 /*
  * Clocking
@@ -33,26 +23,8 @@ float tempo;
 int octave;
 int fundamental; // 0=>A 1=>A# 3=>C
 int mode[7];
-
-/*
- * Inputs
- */
-float inputLength;
-float inputLengthRandom;
-float inputVelocity;        // todo
-float inputVelocityRandom;  // todo
 int inputNotes[7];
-
-/* 
- * Rythmic :
- * Le rythme représente la grille rythmique. 
- * Il dispose des information de vélocités et longueur des notes pour chaque item de la grille.
- */
-int rythmicLength = 16;              // Longueur du tythme (nombre de tick avant de recommencer)
-int rythmicVelocities[16];           // Toute les valeures de de vélocités pour le rythmic en cour
-int rythmicLengths[16];              // Toute les longueurs de note pour le rythmic en cour
-int rythmicPointer = 0;              // A quel index se trouve t'on dans le rythmic
-int rythmicMode = PATTERN_LIVE;
+int inputLength;
 
 /*
  * Mélody :
@@ -64,61 +36,6 @@ int melodyMode = 0;      // Méthode de parcour
 int melodyPointer = 0;                // A quel index se trouve t'on dans la suite mélodique
 int melodyIndex = 0;                  // A quel index se trouve t'on dans la liste des notes active
 int melodyLength = 0;                 
-
-/*
- * Register a new note on the stack
- */ 
-NodeNote* addNote(NodeNote * head, int pitch) {
-    // Trigger midi command
-    noteOn(0x90, pitch, 0x45);
-
-    // Compute duration
-    float baseDuration = timeBetweenNote*inputLength;
-    // to fix: may cause some  bug
-    float randomDuration = inputLengthRandom*inputLength*random(0, 100)*timeBetweenNote;
-    float duration = (float) baseDuration - randomDuration;
-
-    // Get the last item
-    NodeNote * current = head;
-    while (current->next != NULL) {
-      current = current->next;
-    }
-
-    // Allocate memory
-    current->next = (NodeNote *) malloc(sizeof(NodeNote)); 
-
-    // Register values
-    current->next->pitch = pitch;                          
-    current->next->endAt = time + duration;
-    current->next->next = NULL;
-
-    return head;
-}
-
-
-void removeOldNotes(NodeNote *head) {
-  NodeNote *current = head;
-  NodeNote *next;
-
-  int count = 0;
-  int currentTime = millis();
-  while (current != NULL) {
-    next = current->next;       
-    if(next != NULL && next->endAt < currentTime) {
-      
-      noteOn(0x90, next->pitch, 0x00);
-      // Si la note d'après existe
-      NodeNote * new_next = next->next;
-
-      free(next);
-      current->next = new_next;
-    }
-    current = next;
-    count ++;
-  }
-}
-
-
 
 /*
  * Quand on change le tempo ou le bpm. On met à jour le temps entre deux tick
@@ -162,23 +79,11 @@ void updateMelodyOctave() {
       : melodyOctave - 1;
   }
 
-  if(melodyMode == ASC_DESC_ORDER) {
-    // todo
-  } 
-
-  if(melodyMode == CROSS_IN_ORDER) {
-    // todo
-  }
-
-  if(melodyMode == CROSS_OUT_ORDER) { 
-    // todo
-  }
-
-  if(melodyMode == RAND_ORDER) { 
-    // todo 
-  }
+  if(melodyMode == ASC_DESC_ORDER) {} // todo
+  if(melodyMode == CROSS_IN_ORDER) {} // todo
+  if(melodyMode == CROSS_OUT_ORDER) {} // todo
+  if(melodyMode == RAND_ORDER) {} // todo 
 }
-
 
 /* 
  * Récupère l'index dans le tableau d'input (note joué) en fonction du pointer 
@@ -198,12 +103,7 @@ int getInputIndex(int pointer) {
 }
 
 /**
- * Calcul la note midi depuis
- * - la note de base 21 => A0
- * - la fondamentale de l'accord courant
- * - l'octave de la fondamental
- * - l'octave dans la mélodie
- * - le mode harmonique et le degré de la note
+ * Calcul la note midi
  */
 int getNoteFromRank(int rank) {
     return A0 + fundamental + octave*12 + melodyOctave*12 + mode[rank];
@@ -232,9 +132,6 @@ void setup() {
     Serial.begin(31250); 
   }
 
-  head->pitch = 0.;
-  head->next = NULL;
-
   // Clocking
   time = millis();
   lastTick = -1000;
@@ -242,15 +139,14 @@ void setup() {
   tempo = temp1_4;
   timeBetweenNote = getTimeBetweenNote();
 
+  // noteStack = new NoteStack();
+  // rythmicStack = new Rythmic();
+
   // Tonalité et mode
   octave = 3;      
   fundamental = 3; // DO
   int modeReference[] = MODE_DO;
   updateMode(mode, modeReference);
-
-  // Longueur de note
-  inputLength = 1.;
-  inputLengthRandom = 0.;
 
   // Mélodie
   melodyOctaveLenght = 3;
@@ -273,27 +169,18 @@ void loop() {
   float deltaTime = abs(time - lastTick);
   time = millis();
   if (deltaTime > timeBetweenNote) {
+    rythmicStack.advance();
+    
     // Compute next note
     updateMelodyPointer();
     updateMelodyOctave();
     melodyIndex = getInputIndex(melodyPointer);
     int midiNote = getNoteFromRank(inputNotes[melodyIndex]);
 
-    // Add note
-    head = addNote(head, midiNote);
+    RythmicTick * tick = rythmicStack.computeTick();
 
-    // Compute duration
-    float baseDuration = timeBetweenNote*inputLength;
-    // to fix: may cause some  bug
-    float randomDuration = inputLengthRandom*inputLength*random(0, 100)*timeBetweenNote;
-    float duration = (float) baseDuration - randomDuration;
-
-    // noteStack.addNote(midiNote, 0x45, time + duration);
-
-    removeOldNotes(head);
-    // Check 
-    // noteStack.removeOldNotes();
-    //Serial.println(noteStack->count());
+    noteStack.addNote(midiNote, tick->velocity, time + timeBetweenNote * (float) tick->duration);
+    noteStack.removeOldNotes();
 
     // update clocking clocking
     lastTick = time;

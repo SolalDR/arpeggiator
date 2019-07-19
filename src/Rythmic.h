@@ -19,7 +19,7 @@ class Rythmic {
   private:
    int pointer;
    int length;
-   RythmicTick tmp;
+   RythmicTick * tmp;
 
 
   public:
@@ -29,10 +29,10 @@ class Rythmic {
     float tickBaseVelocity;
     float tickRandomVelocity;
     
-    RythmicTick ticks[LENGTH_MAX];
+    RythmicTick * ticks[LENGTH_MAX];
     Rythmic();
-    RythmicTick getTick();
-    RythmicTick computeTick();
+    RythmicTick * getTick();
+    RythmicTick * computeTick();
 
     int advance();
     int setLength(int length);

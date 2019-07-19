@@ -1,7 +1,6 @@
 #include "NoteStack.h"
+#include "config.h"
 using namespace std;
-
-#define DEBUG false
 
 /*
  * Send a midi note

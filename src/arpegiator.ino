@@ -179,9 +179,6 @@ void loop() {
 
     RythmicTick * tick = rythmicStack.computeTick();
 
-    Serial.println((float) tick->duration);
-    Serial.println((float) tick->velocity);
-
     noteStack.addNote(midiNote, tick->velocity, time + timeBetweenNote * (float) tick->duration);
     noteStack.removeOldNotes();
 

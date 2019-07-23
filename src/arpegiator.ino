@@ -7,6 +7,7 @@
 
 NoteStack noteStack;
 Rythmic rythmicStack;
+Melody melody;
 
 /*
  * Clocking
@@ -160,6 +161,18 @@ void setup() {
   inputNotes[0] = 0;
   inputNotes[1] = 2;
   inputNotes[2] = 4;
+
+
+  melody.addDegree(0);
+  melody.addDegree(0);
+  melody.addDegree(0);
+  melody.addDegree(2);
+  melody.removeDegree(2);
+  melody.removeDegree(2);
+  melody.addDegree(4);
+
+  melody.debug();
+
   updateMelodyLength();
 }
 

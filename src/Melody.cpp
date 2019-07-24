@@ -22,15 +22,12 @@ void Pass::clear() {
   delete this->noteHead;
 }
 
-
 void updateFromASC(Pass* startPass, Melody* melody) {
   Pass* nextPass = (startPass->next == NULL)
     ? new Pass()
     : startPass->next;
 
   nextPass->clear();
-
-
 
   // // each pass
   // for(int i=0; i<melody->octave; i++) {

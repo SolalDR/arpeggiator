@@ -14,12 +14,13 @@ void noteOn(int cmd, int pitch, int velocity) {
     Serial.write(pitch);
     Serial.write(velocity); 
   }
-  if (DEBUG == true) {
+
+  #if DEBUG && DEBUG_NOTESTACK
     Serial.print("Note :");
     Serial.print(pitch);
     Serial.print("; Velocity :");
     Serial.println(velocity);
-  }
+  #endif
 }
 
 NoteStack::NoteStack() {

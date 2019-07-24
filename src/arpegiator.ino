@@ -171,9 +171,6 @@ void setup() {
 
   melody.debug();
 
-  Serial.print("freeMemory()=");
-  Serial.println(freeMemory());
-
   updateMelodyLength();
 }
 
@@ -199,6 +196,13 @@ void loop() {
     // update clocking clocking
     lastTick = time;
   }
+
+  #if DEBUG && DEBUG_MEMORY
+    if((int) time % (int) 2000 < 5) {
+      Serial.print("freeMemory()=");
+      Serial.println(freeMemory());
+    }
+  #endif
   
   delay(4);
 }

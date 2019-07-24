@@ -1,6 +1,6 @@
 {
     "programmer": "ArduinoISP",
     "board": "arduino:avr:uno",
-    "port": "/dev/cu.usbmodem141401",
+    "port": "/dev/cu.usbmodem143101",
     "sketch": "src/arpegiator.ino"
 }

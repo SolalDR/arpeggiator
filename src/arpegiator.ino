@@ -4,7 +4,7 @@
 #include "MemoryFree.h"
 #include "NoteStack.h"
 #include "Rythmic.h"
-#include "./constants.c"
+#include "./constants.h"
 
 
 
@@ -147,8 +147,8 @@ void setup() {
   // rythmicStack = new Rythmic();
 
   // Tonalité et mode
-  octave = 3;      
-  fundamental = 3; // DO
+  // octave = 3;      
+  // fundamental = 3; // DO
   int modeReference[] = MODE_DO;
   updateMode(mode, modeReference);
 
@@ -165,11 +165,16 @@ void setup() {
   inputNotes[1] = 2;
   inputNotes[2] = 4;
 
+
+  melody.fundamental = 3;
+  melody.octave = 3;
   melody.addDegree(0);
   melody.addDegree(2);
   melody.addDegree(4);
 
-  melody.debug();
+  // melody.debug();
+  Serial.println("Hello");
+  
 
   updateMelodyLength();
 }
@@ -180,17 +185,26 @@ void loop() {
   float deltaTime = abs(time - lastTick);
   time = millis();
   if (deltaTime > timeBetweenNote) {
+  
     rythmicStack.advance();
-    
-    // Compute next note
+
     updateMelodyPointer();
     updateMelodyOctave();
     melodyIndex = getInputIndex(melodyPointer);
     int midiNote = getNoteFromRank(inputNotes[melodyIndex]);
 
+    Serial.println(midiNote);
     RythmicTick * tick = rythmicStack.computeTick();
 
+    // if (tick != NULL) {
+    //   PassNote * note = melody.advance();
+    //   if (note != NULL) {
+    //     noteStack.addNote(midiNote, tick->velocity, time + timeBetweenNote * (float) tick->duration);
+    //   }
+    // }
+
     noteStack.addNote(midiNote, tick->velocity, time + timeBetweenNote * (float) tick->duration);
+
     noteStack.removeOldNotes();
 
     // update clocking clocking

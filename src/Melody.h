@@ -1,6 +1,13 @@
 #ifndef Melody_h
 #define Melody_h
 
+#define DIR_ASC 1
+#define DIR_DESC 2
+#define DIR_ASC_DESC 3
+#define DIR_IN 4
+#define DIR_RAND 5
+#define DIR_HAND 6
+
 /*
  * Une note seule
  */
@@ -9,6 +16,19 @@ class PassNote {
     int degree;
     int octave;
     PassNote * next = NULL;
+    void clear();
+};
+
+/**
+ * Une phrase joué
+ */
+class Pass {
+  public:
+    PassNote * noteHead = NULL;
+    Pass * next = NULL;
+    int direction = 0;
+    int rank = -1;
+    void clear();
 };
 
 /*
@@ -20,14 +40,6 @@ class InputNode {
     InputNode * next = NULL;
 };
 
-/**
- * Une phrase joué
- */
-class Pass {
-  public:
-    PassNote * noteHead;
-    Pass * next = NULL;
-};
 
 class Melody {
   public:
@@ -35,13 +47,16 @@ class Melody {
     int fundamental;
     int octave;
     int variation;
-    int mode;
+    int direction;
 
     InputNode* inputHead = new InputNode();
-    Pass* passHead = 0;
+    Pass* passHead = NULL;
+
     void addDegree(int degree);
     void removeDegree(int degree);
     void debug();
+    void updatePasses();
+    InputNode * getInputAt(int rank);
 };
 
 #endif

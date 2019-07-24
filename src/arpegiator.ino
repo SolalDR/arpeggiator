@@ -1,9 +1,12 @@
 #include <stdlib.h>
 #include <arduino.h>
 #include "config.h"
+#include "MemoryFree.h"
 #include "NoteStack.h"
 #include "Rythmic.h"
 #include "./constants.c"
+
+
 
 NoteStack noteStack;
 Rythmic rythmicStack;
@@ -50,7 +53,7 @@ float getTimeBetweenNote() {
  * définis le temps de la mélodie (nombre de tick)
  */
 void updateMelodyLength() {
-  melodyLength = melodyMode == ASC_DESC_ORDER ? inputLength * 2 : inputLength;
+  melodyLength = (melodyMode == ASC_DESC_ORDER) ? inputLength * 2 : inputLength;
 }
 
 /**
@@ -162,16 +165,14 @@ void setup() {
   inputNotes[1] = 2;
   inputNotes[2] = 4;
 
-
-  melody.addDegree(0);
-  melody.addDegree(0);
   melody.addDegree(0);
   melody.addDegree(2);
-  melody.removeDegree(2);
-  melody.removeDegree(2);
   melody.addDegree(4);
 
   melody.debug();
+
+  Serial.print("freeMemory()=");
+  Serial.println(freeMemory());
 
   updateMelodyLength();
 }

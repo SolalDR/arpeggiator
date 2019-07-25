@@ -56,7 +56,7 @@ void loop() {
 
     if (tick != NULL) {
       int note = melody.advance();
-      if (note != NULL) {
+      if (note >= 0) {
         noteStack.addNote(note, tick->velocity, time + timeBetweenNote * (float) tick->duration);
       }
     }

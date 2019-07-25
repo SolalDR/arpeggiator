@@ -9,28 +9,24 @@ using namespace std;
  * @returns {Pass} newPass
  */
 Pass * createNewPass(Pass * previousPass, Melody * melody) {
-    Pass * newPass = new Pass();
-    newPass->direction = melody->direction;
-    newPass->variation = melody->variation;
+  Pass * newPass = new Pass();
+  newPass->direction = melody->direction;
+  newPass->variation = melody->variation;
 
-    switch (newPass->direction) {
-        case DIR_ASC: hydratePassASC(newPass, previousPass, melody); break;
-    }
+  switch (newPass->direction) {
+    case DIR_ASC: hydratePassASC(newPass, previousPass, melody); break;
+  }
 
-    return newPass;
+  return newPass;
 }
 
-// Pass * Melody::computeNextPass(Pass * current) {
-//   Pass * next = new Pass();
-//   next->direction = current->direction;
-//   next->variation = current->notesLenght;
-// }
-
-
+/**
+ * A chaque tick, fais avancer la mélodie
+ * @return {int} Retourne le pitch de la note midi
+ */
 int Melody::advance() {
   if (this->passHead) {
-
-    // Last item
+    // Si la pass est terminé
     if (this->passNoteIndex >= this->passHead->notesLenght - 1) {
       this->advancePass();
     }
@@ -43,22 +39,36 @@ int Melody::advance() {
   return -1;
 }
 
+/**
+ * Génère une nouvelle pass automatiquement en suivant la précédente
+ */
 void Melody::advancePass() {
   Pass * nextPass = createNewPass(this->passHead, this);
 
+  // Libère la mémoire de la pass courante
   if(this->passHead != NULL) {
     this->passHead->clear();
   }
-
   delete this->passHead;
+
+  // Réassigne
   this->passHead = nextPass;
   this->passNoteIndex = -1;
 }
 
+/**
+ * Calcul le pitch MIDI depuis le degrée et l'octave de la note courante et les paramètres de la mélodie
+ * @param  {PassNote*} note
+ * @return {int} Le pitch midi
+ */
 int Melody::getMidiNote(PassNote * note) {
   return BASE_NOTE_A0 + this->fundamental + this->octave*12 + note->octave*12 + this->mode[note->degree];
 }
 
+/**
+ * Récupère la touche enregistrer au rang X
+ * @param  {int} rank
+ */
 InputNode* Melody::getInputAt(int rank) {
   InputNode * current = this->inputHead;
 
@@ -70,15 +80,22 @@ InputNode* Melody::getInputAt(int rank) {
     current = current->next;
     index++;
   }
+
+  return NULL;
 }
 
+/**
+ * Ajoute un degree à la mélodie
+ */
 void Melody::addDegree(int degree) {
   InputNode * current = this->inputHead;
 
+  // Crée le nouvel input
   InputNode * newNode = new InputNode();
   newNode->degree = degree;
   newNode->next = NULL;
 
+  // Si l'input existe déjà, return
   while(current->next != NULL) {
     current = current->next;
     if(current->degree == degree) {
@@ -87,11 +104,15 @@ void Melody::addDegree(int degree) {
   }
 
   current->next = newNode;
-
   this->inputLength++;
+
+  // Met à jour la passe courante
   this->updatePasses();
 }
 
+/**
+ * Supprime un degrée à la mélodie
+ */
 void Melody::removeDegree(int degree) {
   InputNode * current = this->inputHead;
   InputNode * next = 0;
@@ -110,6 +131,10 @@ void Melody::removeDegree(int degree) {
   }
 }
 
+/**
+ * Modifie la passe courante
+ * Utiliser lors des changement d'état de la mélodie
+ */
 void Melody::updatePasses() {
   Pass * newPass = createNewPass(this->passHead, this);
 
@@ -121,7 +146,9 @@ void Melody::updatePasses() {
   this->passHead = newPass;
 }
 
-
+/**
+ * Methode de debug
+ */
 void Melody::debug() {
   #if DEBUG && DEBUG_MELODY
     Serial.println("------- MELODY -------");

@@ -18,7 +18,7 @@ class NodeNote {
 };
 
 /** 
- * Une pile de note
+ * Singleton représentant une pile de note
  */
 class NoteStack {  
   private:

@@ -11,6 +11,9 @@ class RythmicTick {
     RythmicTick* next = NULL;
 };
 
+/**
+ * Singleton représentant la structure rythmique
+ */
 class Rythmic {
   private:
    int pointer;

@@ -13,6 +13,9 @@ class InputNode {
     InputNode * next = NULL;
 };
 
+/** 
+ * Singleton représentant la mélodie
+ */
 class Melody {
   public:
     int inputLength = 0;

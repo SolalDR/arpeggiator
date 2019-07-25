@@ -1,6 +1,0 @@
-{
-    "programmer": "ArduinoISP",
-    "board": "arduino:avr:uno",
-    "port": "/dev/cu.Bluetooth-Incoming-Port",
-    "sketch": "src/arpeggiator.ino"
-}

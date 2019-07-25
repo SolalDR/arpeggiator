@@ -1,3 +1,5 @@
 .DS_Store
+.vscode/
 arpeggiator.elf
 arpeggiator.hex
+sample/

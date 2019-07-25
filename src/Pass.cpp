@@ -70,6 +70,22 @@ void Pass::addNote(int degree, int octave) {
   current->next = note;
 }
 
+
+void PassNote::debug(bool recursive) {
+  #if DEBUG && DEBUG_MELODY
+    Serial.println("------ Note ------");
+    Serial.print("| degree: ");
+    Serial.println(this->degree);
+    Serial.print("| octave: ");
+    Serial.println(this->octave);
+    Serial.println("------ /Pass/ ------");
+    Serial.println("");
+  #endif
+  if (recursive && this->next != NULL) {
+    this->next->debug(true);
+  }
+}
+
 void Pass::debug() {
   #if DEBUG && DEBUG_MELODY
     Serial.println("------ Pass ------");
@@ -77,7 +93,7 @@ void Pass::debug() {
     Serial.println(this->direction);
     Serial.print("| rank: ");
     Serial.println(this->rank);
-    Serial.print("| count: ");
+    Serial.print("| notes count: ");
     Serial.println(this->notesLenght);
     Serial.print("| variation: ");
     Serial.println(this->variation);

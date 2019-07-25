@@ -13,7 +13,6 @@ class InputNode {
     InputNode * next = NULL;
 };
 
-
 class Melody {
   public:
     int inputLength = 0;

@@ -1,6 +1,61 @@
 #include "Melody.h"
+#include "MemoryFree.h"
 #include "config.h"
 using namespace std;
+
+
+/**
+ * Calcule et ajoute à une passe les notes de la variation 1 ascendante
+ */
+void addPassNoteVar1ASC(Pass * pass, Melody * melody) {
+    InputNode * input = 0;
+    for (int i=0; i < melody->inputLength; i++) {
+
+      input = melody->getInputAt(i);
+      int degree = input->degree;
+      pass->addNote( degree, pass->rank + 1 );
+    }
+
+}
+
+/**
+ * Rempli les paramètre d'une passe en se basant sur son précédent niveau et l'état de la mélodie
+ */
+void hydratePassASC(Pass * pass, Pass * previousPass, Melody * melody) {
+    int rankMax = melody->octaveLength;
+    if ((melody->variation == 2 || melody->variation == 3) && melody->inputLength > 4) {
+        rankMax *= 2;
+    }
+
+    if(
+        previousPass->direction == pass->direction
+        && previousPass->variation == pass->variation
+    ) {
+        pass->rank = (previousPass->rank + 1) % rankMax;
+    } else {
+        pass->rank = 0;
+    }
+
+    switch(pass->variation) {
+        case 1: addPassNoteVar1ASC(pass, melody); break;
+    }
+}
+
+/**
+ * Permet de créer une nouvelle passes à partir de la passe précédente et de la mélodie.
+ * @returns {Pass} newPass
+ */
+Pass * createNewPass(Pass * previousPass, Melody * melody) {
+    Pass * newPass = new Pass();
+    newPass->direction = melody->direction;
+    newPass->variation = melody->variation;
+
+    switch (newPass->direction) {
+        case DIR_ASC: hydratePassASC(newPass, previousPass, melody); break;
+    }
+
+    return newPass;
+}
 
 
 /**
@@ -86,18 +141,13 @@ Pass * Melody::computeNextPass(Pass * current) {
 
 int Melody::advance() {
   if (this->passHead) {
-    Serial.println("-----");
-    
+
     // Last item
-    Serial.println(this->passHead->notesLenght);
-    Serial.println(this->passNoteIndex);
     if (this->passNoteIndex >= this->passHead->notesLenght - 1) {
       this->advancePass();
-    } else {
-      this->passNoteIndex++;
     }
+    this->passNoteIndex++;
     
-    Serial.println(this->passNoteIndex);
     return this->getMidiNote(
       this->passHead->getPassNoteAt(this->passNoteIndex)
     );
@@ -106,25 +156,22 @@ int Melody::advance() {
 }
 
 void Melody::advancePass() {
-  // Pas de passe courante
-  if(this->passHead == NULL) {
-    return;
+  // Serial.println("----");
+  // Serial.print("Before freeMemory()=");
+  // Serial.println(freeMemory());
+
+  Pass * nextPass = createNewPass(this->passHead, this);
+
+  if(this->passHead != NULL) {
+    this->passHead->clear();
   }
-
-  // Passe à supprimer
-  Pass * oldPass = this->passHead;
-
-  // Si il y a une prochaine passe
-  if (this->passHead->next != NULL) {
-    this->passHead = this->passHead->next;
-  } else {
-    Pass * newPass = this->computeNextPass(oldPass);
-    delete oldPass;
-    this->passHead = newPass;
-  }
-
+  
+  delete this->passHead;
+  this->passHead = nextPass;
   this->passNoteIndex = -1;
-  delete oldPass;
+  // nextPass->debug(true);
+  // Serial.print("After freeMemory()=");
+  // Serial.println(freeMemory());
 }
 
 int Melody::getMidiNote(PassNote * note) {
@@ -175,21 +222,33 @@ void Melody::removeDegree(int degree) {
       this->inputLength--;
       current->next = next->next;
       delete next;
+      this->updatePasses();
       return;
     }
-
     current = next;
   }
-
-  this->updatePasses();
 }
 
 void Melody::updatePasses() {
-  Pass * startPass = this->passHead;
+  Pass * newPass = createNewPass(this->passHead, this);
 
-  switch(this->direction) {
-    case DIR_ASC: updatePassASC(startPass, this); break;
+  if(this->passHead != NULL) {
+    this->passHead->clear();  
   }
+  
+  delete this->passHead;
+  this->passHead = newPass;
+
+  // delete this->passHead;
+  // this->passHead = newPass;
+  // Pass * startPass = this->passHead;
+  // 
+  // this->passHead->debug(true);
+
+
+  // switch(this->direction) {
+  //   case DIR_ASC: updatePassASC(startPass, this); break;
+  // }
 }
 
 

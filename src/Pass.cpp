@@ -10,24 +10,20 @@ void PassNote::clear() {
     this->next->clear();
   }
   delete this->next;
+  this->next = NULL;
 }
 
 /**
  * Supprime toute les pass suivantes récurivement 
  */
 void Pass::clear() {
-  if(this->next != NULL) {
-    this->next->clear();
-  }
-  delete this->next;
-
-
   if(this->noteHead != NULL) {
     this->noteHead->clear();
   }
   this->direction = 0;
   this->rank = -1;
   delete this->noteHead;
+  this->noteHead = NULL;
 }
 
 /**
@@ -53,10 +49,10 @@ void Pass::addNote(int degree, int octave) {
   note->degree = degree;
   note->octave = octave;
   note->next = NULL;
+  this->notesLenght++;
 
   if (current == NULL) {
     this->noteHead = note;
-    this->notesLenght++;
     return;
   }
 
@@ -86,7 +82,7 @@ void PassNote::debug(bool recursive) {
   }
 }
 
-void Pass::debug() {
+void Pass::debug(bool debugNotes) {
   #if DEBUG && DEBUG_MELODY
     Serial.println("------ Pass ------");
     Serial.print("| direction: ");
@@ -104,4 +100,7 @@ void Pass::debug() {
     Serial.println("------ /Pass/ ------");
     Serial.println("");
   #endif
+  if (debugNotes && this->noteHead != NULL) {
+    this->noteHead->debug(true);
+  }
 }

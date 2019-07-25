@@ -11,7 +11,7 @@ class PassNote {
     int octave;
     PassNote * next = NULL;
     void clear();
-    void debug(bool recursive);
+    void debug(bool recursive = false);
 };
 
 /**
@@ -31,7 +31,7 @@ class Pass {
     void addNote(int degree, int octave);
     Pass * createNextPass();
     PassNote * getPassNoteAt(int rank);
-    void debug();
+    void debug(bool debugNotes = false);
 };
 
 #endif

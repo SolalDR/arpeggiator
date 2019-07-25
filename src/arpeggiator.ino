@@ -3,6 +3,7 @@
 #include "config.h"
 #include "MemoryFree.h"
 #include "NoteStack.h"
+#include "Pass.h"
 #include "Melody.h"
 #include "Rythmic.h"
 #include "./constants.h"
@@ -44,7 +45,7 @@ int melodyLength = 0;
  * Quand on change le tempo ou le bpm. On met à jour le temps entre deux tick
  */
 float getTimeBetweenNote() {
-  return (((float) bpm/60.0) * tempo) * 1000.0;
+  return 60.0 / (float) bpm * tempo * 1000.0;
 }
 
 /*
@@ -138,8 +139,8 @@ void setup() {
   // Clocking
   time = millis();
   lastTick = -1000;
-  bpm = 40;
-  tempo = temp1_4;
+  bpm = 15;
+  tempo = temp1_1;
   timeBetweenNote = getTimeBetweenNote();
 
   // noteStack = new NoteStack();
@@ -167,13 +168,14 @@ void setup() {
 
   melody.fundamental = 3;
   melody.octave = 3;
+  melody.octaveLength = 3;
   melody.addDegree(0);
   melody.addDegree(2);
   melody.addDegree(4);
 
-  // melody.debug();
-  Serial.println("Hello");
-  
+
+  // melody.passHead->debug();
+  // melody.passHead->noteHead->debug(true);
 
   updateMelodyLength();
 }
@@ -184,25 +186,24 @@ void loop() {
   float deltaTime = abs(time - lastTick);
   time = millis();
   if (deltaTime > timeBetweenNote) {
-  
     rythmicStack.advance();
+    // updateMelodyPointer();
+    // updateMelodyOctave();
+    // melodyIndex = getInputIndex(melodyPointer);
+    // int midiNote = getNoteFromRank(inputNotes[melodyIndex]);
 
-    updateMelodyPointer();
-    updateMelodyOctave();
-    melodyIndex = getInputIndex(melodyPointer);
-    int midiNote = getNoteFromRank(inputNotes[melodyIndex]);
-
-    Serial.println(midiNote);
     RythmicTick * tick = rythmicStack.computeTick();
 
-    // if (tick != NULL) {
-    //   PassNote * note = melody.advance();
-    //   if (note != NULL) {
-    //     noteStack.addNote(midiNote, tick->velocity, time + timeBetweenNote * (float) tick->duration);
-    //   }
-    // }
-
-    noteStack.addNote(midiNote, tick->velocity, time + timeBetweenNote * (float) tick->duration);
+    if (tick != NULL) {
+      int note = melody.advance();
+      if (note != NULL) {
+        Serial.println("----");
+        Serial.println(note);
+        Serial.print("Before freeMemory()=");
+        Serial.println(freeMemory());
+        noteStack.addNote(note, tick->velocity, time + timeBetweenNote * (float) tick->duration);
+      }
+    }
 
     noteStack.removeOldNotes();
 

@@ -33,7 +33,7 @@ class Melody {
     void updatePasses();
     int advance();
     void advancePass();
-    Pass* computeNextPass(Pass * currentPass);
+    // Pass* computeNextPass(Pass * currentPass);
     int getMidiNote(PassNote * note);
     InputNode * getInputAt(int rank);
 };

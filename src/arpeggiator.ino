@@ -39,16 +39,17 @@ void setup() {
   melody.fundamental = 3;
   melody.octave = 3;
   melody.octaveLength = 3;
+
+  // Example
   melody.addDegree(0);
   melody.addDegree(2);
   melody.addDegree(4);
 }
 
-
 void loop() {
-  // Clocking
   float deltaTime = abs(time - lastTick);
   time = millis();
+
   if (deltaTime > timeBetweenNote) {
     rythmicStack.advance();
     RythmicTick * tick = rythmicStack.computeTick();
@@ -71,5 +72,5 @@ void loop() {
     }
   #endif
   
-  delay(4);
+  delay(TICK);
 }

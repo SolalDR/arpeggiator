@@ -9,13 +9,6 @@
 #define temp1_128 0.0078125
 
 // Types de progressions
-#define ASC_ORDER 1
-#define DESC_ORDER 2
-#define ASC_DESC_ORDER 3
-#define CROSS_IN_ORDER 4
-#define CROSS_OUT_ORDER 5
-#define RAND_ORDER 6
-
 #define DIR_ASC 1
 #define DIR_DESC 2
 #define DIR_ASC_DESC 3
@@ -24,8 +17,8 @@
 #define DIR_HAND 6
 
 // Etat
-#define PATTERN_GRID 1
-#define PATTERN_LIVE 2
+#define MODE_LIVE 1
+#define MODE_GRID 2
 
 // Modes harmonique
 #define MODE_DO {0, 2, 4, 5, 7, 9, 11}

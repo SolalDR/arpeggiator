@@ -11,6 +11,7 @@ class PassNote {
     int octave;
     PassNote * next = NULL;
     void clear();
+    void debug(bool recursive);
 };
 
 /**

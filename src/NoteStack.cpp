@@ -14,21 +14,22 @@ void noteOn(int cmd, int pitch, int velocity) {
     Serial.write(pitch);
     Serial.write(velocity); 
   }
-  if (DEBUG == true) {
+
+  #if DEBUG && DEBUG_NOTESTACK
     Serial.print("Note :");
     Serial.print(pitch);
     Serial.print("; Velocity :");
     Serial.println(velocity);
-  }
+  #endif
 }
 
-NoteStack::NoteStack() {
-  this->head = NULL;
-  this->length = 0;
-}
-
+/**
+ * Rajoute une nouvelle note dans la pile
+ * @param {int} pitch
+ * @param {int} velocity 
+ * @param {float} endTime
+ */
 void NoteStack::addNote(int pitch, int velocity, float endTime) {
-  // Trigger midi command
   noteOn(0x90, pitch, velocity);
 
   NodeNote* node = new NodeNote();
@@ -39,7 +40,10 @@ void NoteStack::addNote(int pitch, int velocity, float endTime) {
   this->length++;
 }
 
-
+/**
+ * Supprime les notes passé en date
+ * Exécuter à chaque TICK
+ */
 void NoteStack::removeOldNotes() {
   NodeNote * current = this->head;
   NodeNote * next;

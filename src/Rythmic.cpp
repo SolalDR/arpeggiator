@@ -29,6 +29,8 @@ int Rythmic::advance() {
   } else {
     this->pointer = (this->pointer + 1) % this->length;
   }
+
+  return this->pointer;
 }
 
 RythmicTick * Rythmic::getTick() {

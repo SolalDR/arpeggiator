@@ -1,6 +1,6 @@
 {
     "programmer": "ArduinoISP",
     "board": "arduino:avr:uno",
-    "port": "/dev/cu.usbmodem143101",
-    "sketch": "src/arpegiator.ino"
+    "port": "/dev/cu.Bluetooth-Incoming-Port",
+    "sketch": "src/arpeggiator.ino"
 }

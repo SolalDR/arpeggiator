@@ -1,87 +1,7 @@
 #include "Melody.h"
-#include "MemoryFree.h"
-
 #include "config.h"
 using namespace std;
 
-void PassNote::clear() {
-  if(this->next != NULL) {
-    this->next->clear();
-  }
-  delete this->next;
-}
-
-void Pass::clear() {
-  if(this->next != NULL) {
-    this->next->clear();
-  }
-  delete this->next;
-
-
-  if(this->noteHead != NULL) {
-    this->noteHead->clear();
-  }
-  this->direction = 0;
-  this->rank = -1;
-  delete this->noteHead;
-}
-
-PassNote* Pass::getPassNoteAt(int rank) {
-  PassNote * current = this->noteHead;
-
-  int index = 0;
-  while(current != NULL) {
-    if(index == rank) {
-      return current;
-    }
-    current = current->next;
-    index++;
-  }
-}
-
-void Pass::addNote(int degree, int octave) {
-  PassNote * current = this->noteHead;
-  
-  PassNote * note = new PassNote();
-  note->degree = degree;
-  note->octave = octave;
-  note->next = NULL;
-
-  if (current == NULL) {
-    this->noteHead = note;
-    this->notesLenght++;
-    return;
-  }
-
-  while(current->next != NULL) {
-    current = current->next;
-    if(current->degree == degree) {
-      return;
-    }
-  }
-
-  current->next = note;
-}
-
-void Pass::debug() {
-  #if DEBUG && DEBUG_MELODY
-    Serial.println("------ Pass ------");
-    Serial.print("| direction: ");
-    Serial.println(this->direction);
-    Serial.print("| rank: ");
-    Serial.println(this->rank);
-    Serial.print("| count: ");
-    Serial.println(this->notesLenght);
-    Serial.print("| variation: ");
-    Serial.println(this->variation);
-    Serial.print("| noteHead: ");
-    Serial.println((int) this->noteHead);
-    Serial.print("| nextPass: ");
-    Serial.println((int) this->next);
-    Serial.println("------ /Pass/ ------");
-    Serial.println("");
-  #endif
-}
 
 /**
  * Recalcule la passe courante
@@ -157,6 +77,12 @@ void updatePassASC(Pass* startPass, Melody* melody) {
   }
 }
 
+Pass * Melody::computeNextPass(Pass * current) {
+  Pass * next = new Pass();
+  next->direction = current->direction;
+  next->variation = current->notesLenght;
+}
+
 
 int Melody::advance() {
   if (this->passHead) {
@@ -179,14 +105,6 @@ int Melody::advance() {
   return -1;
 }
 
-// void Melody::computeNextPass(Pass * currentPass) {
-//   Pass * nextPass = currentPass->next != NULL 
-//     ? currentPass->next
-//     : new Pass();
-  
-//   nextPass->clear();
-// }
-
 void Melody::advancePass() {
   // Pas de passe courante
   if(this->passHead == NULL) {
@@ -200,8 +118,9 @@ void Melody::advancePass() {
   if (this->passHead->next != NULL) {
     this->passHead = this->passHead->next;
   } else {
-    // this->computeNextPass(oldPass);
-    this->passHead = NULL;
+    Pass * newPass = this->computeNextPass(oldPass);
+    delete oldPass;
+    this->passHead = newPass;
   }
 
   this->passNoteIndex = -1;
@@ -209,7 +128,7 @@ void Melody::advancePass() {
 }
 
 int Melody::getMidiNote(PassNote * note) {
-  return A0 + this->fundamental + this->octave*12 + note->octave*12 + this->mode[note->degree];
+  return BASE_NOTE_A0 + this->fundamental + this->octave*12 + note->octave*12 + this->mode[note->degree];
 }
 
 InputNode* Melody::getInputAt(int rank) {

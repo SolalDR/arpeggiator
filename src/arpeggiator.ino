@@ -3,10 +3,9 @@
 #include "config.h"
 #include "MemoryFree.h"
 #include "NoteStack.h"
+#include "Melody.h"
 #include "Rythmic.h"
 #include "./constants.h"
-
-
 
 NoteStack noteStack;
 Rythmic rythmicStack;
@@ -110,7 +109,7 @@ int getInputIndex(int pointer) {
  * Calcul la note midi
  */
 int getNoteFromRank(int rank) {
-    return A0 + fundamental + octave*12 + melodyOctave*12 + mode[rank];
+    return BASE_NOTE_A0 + fundamental + octave*12 + melodyOctave*12 + mode[rank];
 }
 
 /*

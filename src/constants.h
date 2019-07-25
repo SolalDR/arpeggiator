@@ -16,6 +16,13 @@
 #define CROSS_OUT_ORDER 5
 #define RAND_ORDER 6
 
+#define DIR_ASC 1
+#define DIR_DESC 2
+#define DIR_ASC_DESC 3
+#define DIR_IN 4
+#define DIR_RAND 5
+#define DIR_HAND 6
+
 // Etat
 #define PATTERN_GRID 1
 #define PATTERN_LIVE 2
@@ -29,4 +36,4 @@
 #define MODE_LA {0, 2, 3, 5, 7, 8, 10}
 #define MODE_SI {0, 1, 3, 5, 6, 8, 10}
 
-#define A0 21
+#define BASE_NOTE_A0 21

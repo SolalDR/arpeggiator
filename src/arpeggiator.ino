@@ -41,6 +41,8 @@ void setup() {
   melody.octave = 3;
   melody.octaveLength = 3;
 
+  melody.debug();
+
   // Example
   melody.addDegree(0);
   melody.addDegree(2);
@@ -68,7 +70,7 @@ void loop() {
   }
 
   #if DEBUG && DEBUG_MEMORY
-    if((int) time % (int) 2000 < 5) {
+    if ((int) time % (int) 2000 < 5) {
       Serial.print("freeMemory()=");
       Serial.println(freeMemory());
     }

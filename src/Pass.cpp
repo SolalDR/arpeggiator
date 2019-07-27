@@ -106,10 +106,14 @@ void PassNote::clear() {
 void PassNote::debug(bool recursive) {
   #if DEBUG && DEBUG_MELODY
     Serial.println("------ Note ------");
-    Serial.print("| degree: ");
-    Serial.println(this->degree);
-    Serial.print("| octave: ");
-    Serial.println(this->octave);
+    if((int) this == 0) {
+      Serial.println("| NULL");
+    } else {
+      Serial.print("| degree: ");
+      Serial.println(this->degree);
+      Serial.print("| octave: ");
+      Serial.println(this->octave);
+    }
     Serial.println("------ /Pass/ ------");
     Serial.println("");
   #endif

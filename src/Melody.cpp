@@ -32,9 +32,10 @@ int Melody::advance() {
     }
     this->passNoteIndex++;
     
-    return this->getMidiNote(
-      this->passHead->getPassNoteAt(this->passNoteIndex)
-    );
+    PassNote * note = this->passHead->getPassNoteAt(this->passNoteIndex); 
+    if(note != NULL) {
+      return this->getMidiNote(note);
+    }
   }
   return -1;
 }

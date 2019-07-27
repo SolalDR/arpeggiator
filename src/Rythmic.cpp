@@ -13,9 +13,9 @@ Rythmic::Rythmic() {
   this->mode = MODE_LIVE;
 
   this->tickBaseLength = 1.0;
-  this->tickRandomLength = 0.1;
-  this->tickBaseVelocity = 0.5;
-  this->tickRandomVelocity = 0.1;
+  this->tickRandomLength = 0.5;
+  this->tickBaseVelocity = 1.0;
+  this->tickRandomVelocity = 0.5;
 
   this->tmp = new RythmicTick();
   for(int i=0; i<LENGTH_MAX; i++) {

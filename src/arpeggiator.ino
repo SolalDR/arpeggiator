@@ -32,24 +32,26 @@ void setup() {
 
   time = millis();
   lastTick = -1000;
-  bpm = 15;
-  tempo = temp1_1;
+  bpm = 70;
+  tempo = temp1_4;
   timeBetweenNote = getTimeBetweenNote();
 
   melody.fundamental = 3;
+  melody.variation = 3;
   melody.octave = 3;
   melody.octaveLength = 3;
 
   // Example
   melody.addDegree(0);
   melody.addDegree(2);
+  melody.addDegree(3);
   melody.addDegree(4);
+  melody.addDegree(6);
 }
 
 void loop() {
   float deltaTime = abs(time - lastTick);
   time = millis();
-
   if (deltaTime > timeBetweenNote) {
     rythmicStack.advance();
     RythmicTick * tick = rythmicStack.computeTick();

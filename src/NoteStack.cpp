@@ -16,10 +16,12 @@ void noteOn(int cmd, int pitch, int velocity) {
   }
 
   #if DEBUG && DEBUG_NOTESTACK
+  if(velocity != 0 || DEBUG_NOTESTACK_OFF) {
     Serial.print("Note :");
     Serial.print(pitch);
     Serial.print("; Velocity :");
     Serial.println(velocity);
+  }
   #endif
 }
 

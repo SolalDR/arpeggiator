@@ -37,11 +37,9 @@ void setup() {
   timeBetweenNote = getTimeBetweenNote();
 
   melody.fundamental = 3;
-  melody.variation = 3;
+  melody.variation = 1;
   melody.octave = 3;
   melody.octaveLength = 3;
-
-  melody.debug();
 
   // Example
   melody.addDegree(0);

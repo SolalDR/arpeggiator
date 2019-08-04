@@ -37,7 +37,7 @@ void setup() {
   timeBetweenNote = getTimeBetweenNote();
 
   melody.fundamental = 3;
-  melody.variation = 3;
+  melody.variation = 1;
   melody.octave = 3;
   melody.octaveLength = 3;
 
@@ -68,7 +68,7 @@ void loop() {
   }
 
   #if DEBUG && DEBUG_MEMORY
-    if((int) time % (int) 2000 < 5) {
+    if ((int) time % (int) 2000 < 5) {
       Serial.print("freeMemory()=");
       Serial.println(freeMemory());
     }

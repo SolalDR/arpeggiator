@@ -1,8 +1,8 @@
 /**
  * Calcule et ajoute à une passe les notes de la variation 1 ascendante
  */
-void addPassNoteVar1ASC(Pass * pass, Melody * melody) {
-  for (int i=0; i < melody->inputLength; i++) {
+void addPassNoteVar1DESC(Pass * pass, Melody * melody) {
+  for (int i=melody->inputLength; i >= 0 ; i--) {
     int degree = melody->getInputAt(i)->degree;
     pass->addNote( degree, pass->rank + 1 );
   }
@@ -11,18 +11,18 @@ void addPassNoteVar1ASC(Pass * pass, Melody * melody) {
 /**
  * Calcule et ajoute à une passe les notes de la variation 1 ascendante
  */
-void addPassNoteVar23ASC(Pass * pass, Melody * melody) {
+void addPassNoteVar23DESC(Pass * pass, Melody * melody) {
   int inputRanks[4];
 
   // Index à partir du quel on compte les 4 rang composant la pass
   int startAt = (melody->inputLength < 5 || pass->rank % 2 == 0) ? 0 : melody->inputLength - 4;
 
   // On attributs les rangs dans le bon ordre
-  for (int i=0; i < 4; i++) {
+  for (int i=4; i >=0; i--) {
     inputRanks[i] = startAt + i % melody->inputLength;
   }
 
-    // Calcule de l'octave courant
+  // Calcule de l'octave courant
   int octave = (melody->inputLength <= 4)
     ? pass->rank + 1 
     : (pass->rank / 2) + 1;
@@ -45,25 +45,22 @@ void addPassNoteVar23ASC(Pass * pass, Melody * melody) {
 void hydratePassASC(Pass * pass, Pass * previousPass, Melody * melody) {
   int rankMax = melody->octaveLength;
   if ((melody->variation == 2 || melody->variation == 3) && melody->inputLength > 4) {
-      rankMax *= 2;
+    rankMax *= 2;
   }
-
-
 
   if (
-      previousPass->direction == pass->direction
-      && previousPass->variation == pass->variation
+    previousPass->direction == pass->direction
+    && previousPass->variation == pass->variation
   ) {
-      pass->rank = (previousPass->rank + 1) % rankMax;
+    pass->rank = (previousPass->rank + 1) % rankMax;
   } else {
-      pass->rank = 0;
+    pass->rank = 0;
   }
 
-
   switch (pass->variation) {
-      case 1: addPassNoteVar1ASC(pass, melody); break;
-      case 2: addPassNoteVar23ASC(pass, melody); break;
-      case 3: addPassNoteVar23ASC(pass, melody); break;
-      default: break;
+    case 1: addPassNoteVar1DESC(pass, melody); break;
+    case 2: addPassNoteVar23DESC(pass, melody); break;
+    case 3: addPassNoteVar23DESC(pass, melody); break;
+    default: break;
   }
 }

@@ -70,12 +70,12 @@ int Melody::getMidiNote(PassNote * note) {
  * Récupère la touche enregistrer au rang X
  * @param  {int} rank
  */
-InputNode* Melody::getInputAt(int rank) {
+InputNode * Melody::getInputAt(int rank) {
   InputNode * current = this->inputHead;
 
   int index = 0;
-  while(current != NULL) {
-    if(index == rank + 1) {
+  while (current != NULL) {
+    if (index == rank + 1) {
       return current;
     }
     current = current->next;
@@ -97,9 +97,9 @@ void Melody::addDegree(int degree) {
   newNode->next = NULL;
 
   // Si l'input existe déjà, return
-  while(current->next != NULL) {
+  while (current->next != NULL) {
     current = current->next;
-    if(current->degree == degree) {
+    if (current->degree == degree) {
       return;
     }
   }
@@ -139,7 +139,7 @@ void Melody::removeDegree(int degree) {
 void Melody::updatePasses() {
   Pass * newPass = createNewPass(this->passHead, this);
 
-  if(this->passHead != NULL) {
+  if (this->passHead != NULL) {
     this->passHead->clear();  
   }
   
@@ -152,29 +152,15 @@ void Melody::updatePasses() {
  */
 void Melody::debug() {
   #if DEBUG && DEBUG_MELODY
-    Serial.println("------- MELODY -------");
-    Serial.print("| --- Inputs (count : ");
-    Serial.print(this->inputLength);
-    Serial.println(")");
-    InputNode * currentInput = this->inputHead;
-    Serial.print("| ");
-    while(currentInput->next != NULL) {
-      Serial.print(currentInput->next->degree);
-      Serial.print(", ");
-      currentInput = currentInput->next;
-    }
-    Serial.println("");
-    Serial.print("| variation: ");
-    Serial.println(this->variation);
-    Serial.print("| octaveLength: ");
-    Serial.println(this->octaveLength);
-    Serial.print("| direction: ");
-    Serial.println(this->direction);
-    Serial.print("| fundamental: ");
-    Serial.println(this->fundamental);
-    Serial.print("| octave: ");
-    Serial.println(this->octave);
-    Serial.println("|------- /MELODY/ -------");
-    Serial.println("");
+    String debug = String("┌───────── MELODY ─────────\n");
+    debug +=  String("├ Inputs (count : ") + this->inputLength + String(")\n");
+    debug +=  String("├ variation: ") + this->variation + String("\n");
+    debug +=  String("├ octaveLength: ") + this->octaveLength + String("\n");
+    debug +=  String("├ direction: ") + this->direction + String("\n");
+    debug +=  String("├ fundamental: ") + this->fundamental + String("\n");
+    debug +=  String("├ octave: ") + this->octave + String("\n");
+    debug +=  String("└───────── MELODY ─────────\n");
+
+    Serial.println(debug);
   #endif
 }

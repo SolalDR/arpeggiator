@@ -2,7 +2,7 @@
  * Calcule et ajoute à une passe les notes de la variation 1 ascendante
  */
 void addPassNoteVar1DESC(Pass * pass, Melody * melody) {
-  for (int i=melody->inputLength; i >= 0 ; i--) {
+  for (int i = melody->inputLength; i >= 0 ; i--) {
     int degree = melody->getInputAt(i)->degree;
     pass->addNote( degree, pass->rank + 1 );
   }

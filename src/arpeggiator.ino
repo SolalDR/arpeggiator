@@ -37,16 +37,17 @@ void setup() {
   timeBetweenNote = getTimeBetweenNote();
 
   melody.fundamental = 3;
-  melody.variation = 1;
+  melody.variation = 4;
   melody.octave = 3;
-  melody.octaveLength = 3;
+  melody.octaveLength = 4;
+  melody.direction = DIR_ASC;
 
   // Example
   melody.addDegree(0);
   melody.addDegree(2);
-  melody.addDegree(3);
-  melody.addDegree(4);
-  melody.addDegree(6);
+  // melody.addDegree(3);
+  // melody.addDegree(4);
+  // melody.addDegree(6);
 }
 
 void loop() {

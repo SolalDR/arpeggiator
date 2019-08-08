@@ -40,13 +40,15 @@ void setup() {
   melody.variation = 4;
   melody.octave = 3;
   melody.octaveLength = 4;
-  melody.direction = DIR_ASC;
-
+  melody.direction = DIR_DESC;
   // Example
-  melody.addDegree(0);
+  melody.addDegree(1);
   melody.addDegree(2);
-  // melody.addDegree(3);
-  // melody.addDegree(4);
+  melody.addDegree(3);
+  melody.addDegree(4);
+  melody.addDegree(5);
+
+  
   // melody.addDegree(6);
 }
 

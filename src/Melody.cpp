@@ -3,6 +3,7 @@
 #include "config.h"
 using namespace std;
 #include "utils/asc.h"
+#include "utils/desc.h"
 
 /**
  * Permet de créer une nouvelle passes à partir de la passe précédente et de la mélodie.
@@ -15,6 +16,7 @@ Pass * createNewPass(Pass * previousPass, Melody * melody) {
 
   switch (newPass->direction) {
     case DIR_ASC: hydratePassASC(newPass, previousPass, melody); break;
+    case DIR_DESC: hydratePassDESC(newPass, previousPass, melody); break;
   }
 
   return newPass;
@@ -45,6 +47,8 @@ int Melody::advance() {
  */
 void Melody::advancePass() {
   Pass * nextPass = createNewPass(this->passHead, this);
+
+  nextPass->debug(true);
 
   // Libère la mémoire de la pass courante
   if(this->passHead != NULL) {
@@ -152,14 +156,15 @@ void Melody::updatePasses() {
  */
 void Melody::debug() {
   #if DEBUG && DEBUG_MELODY
-    String debug = String("┌───────── MELODY ─────────\n");
-    debug +=  String("├ Inputs (count : ") + this->inputLength + String(")\n");
-    debug +=  String("├ variation: ") + this->variation + String("\n");
-    debug +=  String("├ octaveLength: ") + this->octaveLength + String("\n");
-    debug +=  String("├ direction: ") + this->direction + String("\n");
-    debug +=  String("├ fundamental: ") + this->fundamental + String("\n");
-    debug +=  String("├ octave: ") + this->octave + String("\n");
-    debug +=  String("└───────── MELODY ─────────\n");
+    String debug;
+    debug =  String("┌───────── MELODY ─────────\n");
+    debug += String("├ Inputs (count : ") + this->inputLength + String(")\n");
+    debug += String("├ variation: ") + this->variation + String("\n");
+    debug += String("├ octaveLength: ") + this->octaveLength + String("\n");
+    debug += String("├ direction: ") + this->direction + String("\n");
+    debug += String("├ fundamental: ") + this->fundamental + String("\n");
+    debug += String("├ octave: ") + this->octave + String("\n");
+    debug += String("└───────── MELODY ─────────\n");
 
     Serial.println(debug);
   #endif

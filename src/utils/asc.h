@@ -46,19 +46,42 @@ void addPassNoteVar4ASC(Pass * pass, Melody * melody) {
   int inputRanks[3];
   int octaves[3];
 
+  // Premiere note, calculé à partir du rang et du nombre de note
   inputRanks[0] = (pass->rank * 2) % melody->inputLength;
   octaves[0] = (pass->rank * 2) / melody->inputLength + 1;
 
+  // Deuxième note, rajoute 2, gestion de l'octave supplémentaire
   inputRanks[1] = (inputRanks[0] + 2) % melody->inputLength;
   octaves[1] = inputRanks[0] + 2 >= melody->inputLength 
     ? octaves[0] + 1
     : octaves[0];
   
+  // Deuxième note, enlève 1, gestion de l'octave supprimé
   inputRanks[2] = inputRanks[1] - 1;
   octaves[2] = octaves[1];
   if (inputRanks[2] < 0) {
     inputRanks[2] = melody->inputLength + inputRanks[2];
     octaves[2] = octaves[1] - 1;
+  }
+
+  // Cas particulier si seulement 1 input (les octaves peuvent passer de 2 en 2)
+  if(melody->inputLength == 1) {
+    inputRanks[0] = 0;
+    inputRanks[1] = 0;
+    inputRanks[2] = 0;
+    octaves[0] = 1;
+    octaves[1] = octaves[0] + 2 % (melody->octaveLength);
+    octaves[2] = octaves[1] - 1;
+    if(octaves[2] == 0) {
+      octaves[2] = melody->octaveLength;
+    }
+  }
+
+  // Cas particulier si seulement 1 octave et 2 notes (override)
+  if(melody->octaveLength == 1) {
+    octaves[0] = 1;
+    octaves[1] = 1;
+    octaves[2] = 1;
   }
 
   for (int i = 0; i<3; i++) {
@@ -68,12 +91,14 @@ void addPassNoteVar4ASC(Pass * pass, Melody * melody) {
 
 /**
  * Compte le nombre de pass maximal
+ * @todo duplicate content desc.h
  */
 int getVar4ASCRankMax(int inputLength, int octaveLength) {
   int head[] = {0, 0};
   int rank = 0;
   int countPass = 0;
-  
+  // Serial.println("---");
+  // Serial.println(String("Head : ") + head[0] + String(" ") + head[1]);
   while(head[1] < octaveLength) {
     switch(rank) {
       case 0: head[0] += 2; break;
@@ -82,7 +107,7 @@ int getVar4ASCRankMax(int inputLength, int octaveLength) {
     }
 
     if (head[0] >= inputLength) {     
-      head[0] = head[0] % inputLength;  
+      head[0] = head[0] % inputLength;
       head[1] += 1;
     }
     if( head[0] < 0) {
@@ -90,17 +115,17 @@ int getVar4ASCRankMax(int inputLength, int octaveLength) {
       head[1] -= 1;
     }
 
+    // Serial.println(String("Head : ") + head[0] + String(" ") + head[1]);
     if(rank == 2) {
       countPass++;
     }
-
     rank = (rank + 1) % 3;
   }
 
-  return countPass;
+
+
+  return countPass == 0 ? 1 : countPass;
 }
-
-
 
 /**
  * Rempli les paramètre d'une passe en se basant sur son précédent niveau et l'état de la mélodie

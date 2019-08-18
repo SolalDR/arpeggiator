@@ -19,7 +19,7 @@ class InputNode {
 class Melody {
   public:
     int inputLength = 0;
-    int fundamental;
+    int fundamental = 0;
     int octave = 1;
     int octaveLength = 1;
     int variation = 1;

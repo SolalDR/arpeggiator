@@ -4,7 +4,7 @@
 void addPassNoteVar1DESC(Pass * pass, Melody * melody) {
   for (int i = melody->inputLength - 1; i >= 0 ; i--) {
     int degree = melody->getInputAt(i)->degree;
-    pass->addNote( degree, melody->octaveLength - pass->rank + 1 );
+    pass->addNote( degree, melody->octaveLength - pass->rank );
   }
 }
 

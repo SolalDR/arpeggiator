@@ -1,9 +1,10 @@
+#include "constants.h"
 #include "Melody.h"
 #include "MemoryFree.h"
-#include "config.h"
 using namespace std;
 #include "utils/asc.h"
 #include "utils/desc.h"
+#include "utils/asc_desc.h"
 
 /**
  * Permet de créer une nouvelle passes à partir de la passe précédente et de la mélodie.
@@ -17,6 +18,7 @@ Pass * createNewPass(Pass * previousPass, Melody * melody) {
   switch (newPass->direction) {
     case DIR_ASC: hydratePassASC(newPass, previousPass, melody); break;
     case DIR_DESC: hydratePassDESC(newPass, previousPass, melody); break;
+    case DIR_ASC_DESC: hydratePassASC_DESC(newPass, previousPass, melody); break;
   }
 
   return newPass;

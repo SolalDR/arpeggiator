@@ -13,7 +13,7 @@ Rythmic::Rythmic() {
   this->mode = MODE_LIVE;
 
   this->tickBaseLength = 1.0;
-  this->tickRandomLength = 0.5;
+  this->tickRandomLength = 0.8;
   this->tickBaseVelocity = 1.0;
   this->tickRandomVelocity = 0.5;
 

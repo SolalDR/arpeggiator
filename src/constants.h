@@ -1,10 +1,10 @@
 // DEBUG
-#define DEBUG true
+#define DEBUG false
 #define DEBUG_MEMORY false
 #define DEBUG_NOTESTACK false
 #define DEBUG_NOTESTACK_OFF false
 #define DEBUG_MELODY false
-#define DEBUG_LCD_BTN_MODULE true
+#define DEBUG_LCD_BTN_MODULE false
 
 // Rates
 #define rate1_1 1

@@ -83,6 +83,7 @@ void updateTone(Configuration * config, Melody * melody) {
  * Update BPM
  */
 void updateBpm(Configuration * config) {
+  Serial.println((int) config);
   if(buttons[RANK_BTN_TOP]) {
     if (config->bpm < 300) {
       config->bpm++;
@@ -122,9 +123,11 @@ void updateRate(Configuration * config, Melody * melody) {
   }
 
   if(buttons[RANK_BTN_BOTTOM]) {
-    rank - 1 >= 0 
-      ? config->rate = rates[(rank - 1) % 8]
-      : config->rate = rates[7];
+    if(rank - 1 >= 0 ) {
+      config->rate = rates[(rank - 1) % 8];
+    } else {
+      config->rate = rates[7];
+    }
   }
 
   int ratio = 1/config->rate;

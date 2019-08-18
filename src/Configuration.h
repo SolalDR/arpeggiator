@@ -7,5 +7,5 @@ class Configuration {
     bool midi = true;
     int midiNumber = 21;
     float rate = 0.25;
-    int tick = 4; 
+    int tick = 1; 
 };

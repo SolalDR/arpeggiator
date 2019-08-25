@@ -7,6 +7,7 @@
 #include "Rythmic.h"
 #include "./constants.h"
 #include "./controllers/lcd.h"
+#include "./controllers/keyboard.h"
 
 NoteStack noteStack;
 Rythmic rythmicStack;
@@ -29,6 +30,7 @@ void setup() {
     Serial.begin(31250);  // MIDI baud rate:
   }
 
+  setupKeyboard();
   setupLCD();
 
   uint32_t time = millis();
@@ -78,6 +80,6 @@ void loop() {
     // Serial.println(configuration.bpm);
   // Serial.println(configuration.rate);
   loopLCD(time, &configuration, &melody);
-
+  loopKeyboard();
   delay(configuration.tick);
 }
